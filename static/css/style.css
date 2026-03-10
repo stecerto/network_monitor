@@ -1,0 +1,33 @@
+/* Menu colore base grigio */
+.navbar .nav-link {
+    color: #6c757d;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+/* Hover viola */
+.navbar .nav-link:hover {
+    color: #6f42c1;
+}
+
+/* Attivo rosso */
+.navbar .nav-link.active {
+    color: red !important;
+}
+
+url-link a {
+    color: #6c757d !important;
+    font-weight: 500;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+url-link a:hover {
+    color: #6f42c1 !important;
+}
+
+.url-link:hover {
+    color: #6f42c1;
+    text-decoration: underline; /* opzionale, per evidenziare il link al passaggio del mouse */
+}
+

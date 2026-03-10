@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Monitor Netz App{% endblock title%}</title>
+    <!-- <meta http-equiv="refresh" content="10"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-light shadow-sm">
+      <div class="container">
+
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'device_list' %}">
+          <img src="{% static 'images/header.png' %}" height="150" alt="Logo">
+        </a>
+
+        <!-- Bottone mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#mainMenu" aria-controls="mainMenu"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu -->
+        <div class="collapse navbar-collapse" id="mainMenu">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'device_list' %}active{% endif %}"
+                  href="{% url 'device_list' %}">Device list</a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+<main>
+        <div container>
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </main>
+    {% block footer %}
+        <footer class="bg-light border-top text-center py-4 mt-5">
+            <div class="container">
+                <p class="mb-0">© 2026 Certo Stefano</p>
+
+            </div>
+        </footer>
+    {% endblock footer %}
+
+
+    <!-- Bootstrap JavaScript Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+
+
+
+    </body>
+</html>

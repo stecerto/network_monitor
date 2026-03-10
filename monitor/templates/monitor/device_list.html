@@ -1,0 +1,102 @@
+{% extends "monitor/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Device Monitor{% endblock title %}
+
+{%block content %}
+
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Network Devices</h2>
+            <!--scan from -->
+            <div class="card p-4 shadow">
+
+
+                <form method="get">
+                        <label>Router IP:</label>
+                        <input type="text" name="ip" value="{{ current_ip }}" />
+                        <button type="submit">Scan</button>
+                    </form>
+
+<br>
+                    <div class="row mb-4">
+
+                        <div class="col-md-3">
+                            <div class="card text-bg-primary shadow">
+                                <div class="card-body">
+                                    <h5>Total Devices</h5>
+                                    <h2>{{ total_devices }}</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="card text-bg-success shadow">
+                                <div class="card-body">
+                                    <h5>Online</h5>
+                                    <h2>{{ online_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="card text-bg-danger shadow">
+                                <div class="card-body">
+                                    <h5>Offline</h5>
+                                    <h2>{{ offline_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Vendor</th>
+                            <th>Mac</th>
+                            <th>IP</th>
+                            <th>Status</th>
+                            <th>Last Check</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for device in devices %}
+                        <tr>
+                            <td>{{ device.name }}</td>
+                            <td>{{ device.vendor }}</td>
+                            <td>{{ device.mac_address|slice:":8" }}</td>
+                            <td>{{ device.ip_address }}</td>
+                            <td>
+                                {% if device.status == "Online" %}
+                                <span class="badge bg-success">Online</span>
+                                {% else %}
+                                <span class="badge bg-danger">Offline</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted">
+                                {{ device.last_check|date:"d.m.Y H:i:s " }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No devices found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                </div>
+        </div>
+    </div>
+</div>
+
+<script>
+setInterval(function(){
+    location.reload();
+}, 10000);
+</script>
+{% endblock content %}
