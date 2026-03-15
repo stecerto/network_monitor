@@ -19,7 +19,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from monitor.views import device_list, device_detail
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("monitor.urls")),
+    path('', view=device_list, name='device_list'),
+    path('device/<int:device_id>/', view=device_detail, name='device_detail'),
 ]

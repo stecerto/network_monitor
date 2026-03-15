@@ -1,0 +1,97 @@
+{% extends "monitor/base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Detail {{ device.name }}{% endblock title %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>{{ device.name }}</h2>
+            <!--scan from -->
+            <div class="card p-4 shadow">
+                <p><b>IP Address: </b>{{ device.ip }}</p>
+                <p><b>MAC Address: </b>{{ device.mac }}</p>
+                <p><b>Status: </b>
+                {% if device.status %}
+                    🟢 Online
+                {% else %}
+                    🔴 Offline
+                {% endif %}
+                </p>
+                <p><b>Last Check: </b>{{ device.last_check }}</p>
+                <p><b>Vendor: </b>{{ device.vendor }}</p>
+                <p><b>Operating System: </b>
+                    {{
+                    {% if device.os %}
+                        {{ device.os }}
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                    }}
+                </p>
+
+                <p><b>Open Ports</b></p>
+                <ul id="ports"></ul>
+
+               <script>
+                fetch("/api/scan-ports/{{ device.ip_address }}/")
+                .then(response => response.json())
+                .then(data => {
+
+                    let list = document.getElementById("ports");
+
+                    data.ports.forEach(function(port_info){
+                        let li = document.createElement("li");
+
+                        if(port_info.error){
+                            li.textContent = "Errore: " + port_info.error;
+                        } else {
+                            li.innerHTML = `
+                                ${port_info.port} - ${port_info.service}
+                                <button class="btn btn-sm btn-primary test-btn" data-port="${port_info.port}">
+                                    Test
+                                </button>
+                                <span class="response" style="margin-left: 10px;"></span>
+                            `;
+                        }
+
+                        list.appendChild(li);
+                    });
+
+                    // Aggiungi listener a tutti i bottoni
+                    document.querySelectorAll(".test-btn").forEach(function(button){
+                        button.addEventListener("click", function(){
+                            const port = this.dataset.port;
+                            const ip = "{{ device.ip_address }}";
+                            const responseSpan = this.nextElementSibling;
+
+                            responseSpan.textContent = "Loading...";
+
+                            fetch(`/send/${ip}/${port}/`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.status === "ok"){
+                                    responseSpan.textContent = JSON.stringify(data);
+                                } else {
+                                    responseSpan.textContent = "Connession refused or service not available";
+                                }
+                            })
+                            .catch(err => responseSpan.textContent = "Fetch fallito: " + err);
+                        });
+                    });
+
+                })
+                .catch(err => console.error("Fetch fallito:", err));
+                </script>
+            </div>
+
+            <a href="{% url 'device_list' %}" class="btn btn-primary mt-3">Back to list</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

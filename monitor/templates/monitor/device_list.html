@@ -4,9 +4,9 @@
 
 {% block title %}Device Monitor{% endblock title %}
 
-{%block content %}
+{% block content %}
 
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-4" xmlns="http://www.w3.org/1999/html">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2>Network Devices</h2>
@@ -18,7 +18,7 @@
                         <label>Router IP:</label>
                         <input type="text" name="ip" value="{{ current_ip }}" />
                         <button type="submit">Scan</button>
-                    </form>
+                </form>
 
 <br>
                     <div class="row mb-4">
@@ -51,52 +51,21 @@
                         </div>
 
                     </div>
-                    <table class="table table-bordered table-hover">
-                    <thead class="table-light">
-                        <tr>
+                    <div id="device-table">
+                        {% include "monitor/device_table.html" %}
+                    </div>
 
-                            <th>Name</th>
-                            <th>Vendor</th>
-                            <th>Mac</th>
-                            <th>IP</th>
-                            <th>Status</th>
-                            <th>Last Check</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for device in devices %}
-                        <tr>
-                            <td>{{ device.name }}</td>
-                            <td>{{ device.vendor }}</td>
-                            <td>{{ device.mac_address|slice:":8" }}</td>
-                            <td>{{ device.ip_address }}</td>
-                            <td>
-                                {% if device.status == "Online" %}
-                                <span class="badge bg-success">Online</span>
-                                {% else %}
-                                <span class="badge bg-danger">Offline</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-muted">
-                                {{ device.last_check|date:"d.m.Y H:i:s " }}
-                            </td>
-                        </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="6" class="text-center text-muted">No devices found.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                </div>
         </div>
     </div>
 </div>
 
 <script>
-setInterval(function(){
-    location.reload();
-}, 10000);
+    setInterval(function(){
+        fetch("/devices/table/")
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("device-table").innerHTML = html;
+            });
+    }, 120000);
 </script>
-{% endblock content %}
+    {% endblock content %}
